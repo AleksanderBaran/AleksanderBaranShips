@@ -1,11 +1,10 @@
 #include "Player.h"
+#include "Ship.h"
+#include "Board.h"
 #include <iostream>
 using namespace std;
 
-Player::Player(string n) : name(n), wins(0) // I couldn't figure it out so i had to ask blackbox for help
-{
-
-}
+Player::Player(string n) : name(n), wins(0) {}
 
 char Player::chooseDirection() 
 {
@@ -14,8 +13,7 @@ char Player::chooseDirection()
     {
         cout << "Choose direction (u - up, d - down, l - left, r - right): ";
         cin >> direction;
-        if (direction == 'u' || direction == 'U' || direction == 'D' || direction == 'L' || direction == 'R' || direction == 'd' || direction == 'l' || direction == 'r') 
-        {
+        if (direction == 'u' || direction == 'U' || direction == 'D' || direction == 'L' || direction == 'R' || direction == 'd' || direction == 'l' || direction == 'r') {
             return direction;
         }
         cout << "Invalid direction, try again." << endl;
@@ -31,18 +29,32 @@ void Player::placeShips()
     {
         for (int i = 0; i < shipCount[r]; i++) 
         {
-            char rowChar;
-            int x, y;
+            char rowLetter;
+            int x;
+            int y;
             char direction;
 
             cout << "Placing a ship of length " << shipLengths[r] << endl;
 
-            while (true) 
+            while (true)
             {
-                cout << "Enter starting coordinates (e.g., A1, B5): ";
-                cin >> rowChar >> y;
-                y--; 
-                x = static_cast<int>(rowChar) - 'A';  // Convert char to index I am not going to lie I didn't know how to do it so I got it from ai
+                cout << "Enter starting coordinates (A1, I10): ";
+                cin >> rowLetter >> y;
+                y--;
+                rowLetter = toupper(rowLetter);
+                x = static_cast<int>(rowLetter) - 'A';
+
+                if (shipLengths[r] == 1) 
+                {
+                    if (!board.canPlaceShip(x, y, 1, 'r')) 
+                    {
+                        cout << "Cannot place ship there. Try again." << endl;
+                        continue;
+                    }
+                    board.placeShip(x, y, shipLengths[r], direction);
+                    board.displayBoard();
+                    break;     
+                }
 
                 direction = chooseDirection();
 
@@ -65,25 +77,44 @@ bool Player::shoot(Board &opponentBoard, int x, int y)
     if (x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE) 
     {
         cout << "Invalid coordinates! Try again." << endl;
-        return true; 
+        return true;
     }
-    else if (opponentBoard.shotBoard[x][y] == HIT || opponentBoard.shotBoard[x][y] == MISS) 
+    if (opponentBoard.shotBoard[x][y] == HIT || opponentBoard.shotBoard[x][y] == MISS) 
     {
         cout << "You've already shot at this cell!" << endl;
         return true;
     }
-    else if (opponentBoard.grid[x][y] == SHIP) 
+    if (opponentBoard.grid[x][y] == SHIP) 
     {
-        cout << "Hit!" << endl;
+        cout << "Hit! You get another try!" << endl;
+
         opponentBoard.grid[x][y] = HIT;
         opponentBoard.shotBoard[x][y] = HIT;
+
+        for (int i = 0; i < opponentBoard.shipCount; i++) 
+        {
+            for (int j = 0; j < opponentBoard.ships[i].length; j++) 
+            {
+                if (opponentBoard.shipPositions[i][j].x == x && opponentBoard.shipPositions[i][j].y == y) 
+                    {
+                    opponentBoard.ships[i].hit();
+                    if (opponentBoard.ships[i].isSunk()) 
+                    {
+                        cout << "Ship sunk!" << endl;
+                        opponentBoard.markAroundShip(i);
+                    }
+                    break;
+                }
+            }
+        }
         return true;
     }
-    cout << "You missed!Get out the chair!" << endl;
+    cout << "Miss! Press enter and get out the chair!" << endl;
+    opponentBoard.grid[x][y] = MISS;
     opponentBoard.shotBoard[x][y] = MISS;
     return false;
 }
-void Player::resetBoard()
+void Player::resetBoard() 
 {
     board.resetBoard();
 }
