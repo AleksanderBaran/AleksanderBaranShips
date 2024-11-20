@@ -1,11 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
-#include "board.h"
+#include "Board.h"
 #include <string>
 #include <iostream>
 using namespace std;
 
-class Player {
+class Player 
+{
 public:
     string name;
     Board board;
