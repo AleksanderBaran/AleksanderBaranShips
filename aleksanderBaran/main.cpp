@@ -3,12 +3,15 @@
 #include "Board.cc"
 #include <iostream>
 #include <cstdlib>
+#include <thread>
+#include <chrono>
 using namespace std;
 void clearConsole() 
 {
     cout << "Press enter to continue:";
     cin.ignore(); 
     cin.get();
+    this_thread::sleep_for(chrono::seconds(1));
     system("cls");
 }
 int main() 
@@ -43,14 +46,16 @@ int main()
             currentPlayer->board.displayBoard();
             opponent->board.displayOpponentBoard();
 
-            char rowChar;
+            char rowLetter;
             int y;
 
             cout << "\nEnter coordinates to shoot (A1, B2, etc): ";
-            cin >> rowChar >> y;
+            cin >> rowLetter >> y;
 
             y--;
-            int x = static_cast<int>(rowChar) - 'A';
+            //i did so that it will also work with lower case letters
+            rowLetter = toupper(rowLetter);
+            int x = static_cast<int>(rowLetter) - 'A';
 
             
 
@@ -81,7 +86,12 @@ int main()
         char playAgain;
         cout << "Do you want to play again? (y/n): ";
         cin >> playAgain;
-        if (playAgain != 'y' && playAgain != 'Y') break;
+        if (playAgain != 'y' && playAgain != 'Y') 
+        {
+            clearConsole();
+            break;
+        }
+        clearConsole();
 
         player1.board.resetBoard();
         player2.board.resetBoard();
