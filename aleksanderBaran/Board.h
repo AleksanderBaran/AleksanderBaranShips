@@ -8,7 +8,11 @@ const char SHIP = 'S';
 const char HIT = 'X';
 const char MISS = 'O';
 const char WATER = '~'; 
-
+struct Position 
+{
+    int x;
+    int y;
+};
 class Board 
 {
 public:
@@ -16,15 +20,16 @@ public:
     char shotBoard[BOARD_SIZE][BOARD_SIZE];  
     int shipCount;
     Ship ships[10];
-
+    Position shipPositions[10][4];
     Board();
     void displayBoard();
     void displayOpponentBoard();
     void placeShip(int x, int y, int length, char direction);
     bool canPlaceShip(int startX, int startY, int length, char direction);
     bool allShipsDestroyed();
-    void markAroundShip(int x, int y, int length, char direction);  // I tried it
     void resetBoard();
+    void markAroundShip(int shipIndex);
+    void markMiss(int x, int y);
 };
 
 #endif
