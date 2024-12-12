@@ -6,12 +6,18 @@
 #include <thread>
 #include <chrono>
 using namespace std;
+void clearConsoleV2()
+{
+    cout << "Press enter to continue, but only if its your turn!";
+    cin.get();
+    system("cls");
+}
 void clearConsole() 
 {
     cout << "Press enter to continue:";
-    cin.ignore(); 
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
     cin.get();
-    this_thread::sleep_for(chrono::seconds(1));
+    this_thread::sleep_for(chrono::milliseconds(500));
     system("cls");
 }
 int main() 
@@ -23,18 +29,25 @@ int main()
 
     while (true) 
     {
+        Board emptyBoard;
         Player player1("Player 1");
         Player player2("Player 2");
 
         cout << "Player 1 place your ships" << endl;
+        emptyBoard.displayBoard();
+        cout << "This is how the board looks"<<endl;
         player1.placeShips();
-        cout << "You have placed all your ships. Get out the chair!" << endl;
+        cout << "You have placed all your ships. After you press enter get out the chair!" << endl;
         clearConsole();
+        clearConsoleV2();
 
         cout << "Player 2 place your ships" << endl;
+        emptyBoard.displayBoard();
+        cout << "This is how the board looks"<<endl;
         player2.placeShips();
-        cout << "You have placed all your ships. Get out the chair!" << endl;
+        cout << "You have placed all your ships. After you press enter get out the chair!" << endl;
         clearConsole();
+        clearConsoleV2();
 
         // I cound figure it out with reference variables so i used pointers to easier use funciton swap
         Player* currentPlayer = &player1;
@@ -75,9 +88,11 @@ int main()
                     break; 
                 }
                 clearConsole();
+                clearConsoleV2();
                 continue;
             } 
             clearConsole();
+            clearConsoleV2();
             swap(currentPlayer, opponent);
         }
 
