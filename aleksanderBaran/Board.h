@@ -18,6 +18,7 @@ class Board
 public:
     char grid[BOARD_SIZE][BOARD_SIZE];  
     char shotBoard[BOARD_SIZE][BOARD_SIZE];  
+    char testBoard1[BOARD_SIZE][BOARD_SIZE];
     int shipCount;
     Ship ships[10];
     Position shipPositions[10][4];
