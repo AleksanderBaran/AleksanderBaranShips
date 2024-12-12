@@ -15,7 +15,7 @@ Board::Board()
     }
     shipCount = 0;
 }
-void Board::displayBoard() 
+void Board::displayBoard()
 {
     cout << "  ";
 
@@ -188,6 +188,7 @@ bool Board::canPlaceShip(int startX, int startY, int length, char direction)
                 {
                     if (grid[checkX][checkY] != EMPTY) 
                     {
+                        cout << "Ships can't stick together!" << endl; // New message
                         return false; 
                     }
                 }
