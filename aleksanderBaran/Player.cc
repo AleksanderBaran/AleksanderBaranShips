@@ -44,11 +44,17 @@ void Player::placeShips()
                 rowLetter = toupper(rowLetter);
                 x = static_cast<int>(rowLetter) - 'A';
 
+                if (x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE) 
+                {
+                    cout << "Invalid coordinates! Please enter values within the range A1 to J10." << endl;
+                    continue;
+                }
+
                 if (shipLengths[r] == 1) 
                 {
                     if (!board.canPlaceShip(x, y, 1, 'r')) 
                     {
-                        cout << "Cannot place ship there. Try again." << endl;
+                        cout << "Out of bounds for a single ship. Try again." << endl;
                         continue;
                     }
                     board.placeShip(x, y, shipLengths[r], direction);
@@ -57,6 +63,12 @@ void Player::placeShips()
                 }
 
                 direction = chooseDirection();
+
+                if (direction != 'u' && direction != 'd' && direction != 'l' && direction != 'r') 
+                {
+                    cout << "Invalid direction! Please choose (u, d, l, r)." << endl;
+                    continue;
+                }
 
                 if (board.canPlaceShip(x, y, shipLengths[r], direction)) 
                 {
@@ -81,12 +93,12 @@ bool Player::shoot(Board &opponentBoard, int x, int y)
     }
     if (opponentBoard.shotBoard[x][y] == HIT || opponentBoard.shotBoard[x][y] == MISS) 
     {
-        cout << "You've already shot at this cell!" << endl;
+        cout << "You've already shot at this cell! Follow the instructions and try again!" << endl;
         return true;
     }
     if (opponentBoard.grid[x][y] == SHIP) 
     {
-        cout << "Hit! You get another try!" << endl;
+        cout << "Hit! You get another try! Follow the instructions and stay in the chair!" << endl;
 
         opponentBoard.grid[x][y] = HIT;
         opponentBoard.shotBoard[x][y] = HIT;
@@ -109,7 +121,7 @@ bool Player::shoot(Board &opponentBoard, int x, int y)
         }
         return true;
     }
-    cout << "Miss! Press enter and get out the chair!" << endl;
+    cout << "Miss! Get out of the chair after you press enter!" << endl;
     opponentBoard.grid[x][y] = MISS;
     opponentBoard.shotBoard[x][y] = MISS;
     return false;
